@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>prac 2</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script>
+        /**
+         練習主軸：ajax非同步 & 回傳資料處理(json解析) ＆ dom 操作
+         - 輸入完帳號密碼後，點擊登入按鈕並於下方出現"登入中.."，呼叫ajax進行登入，若有錯誤，顯示在畫面上
+            - 呼叫網址: https://shawn-api.a45.me/test/api.php
+            - 參數 username, passowrd
+         - 解析回傳資料後，判斷 status=1 的情況下，將prac1.成績表顯示在畫面上
+         - 登出按鈕，隱藏成績表並回到登入畫面
+        */
+    </script>
+    <style type="text/css">
+        .login-form {
+            width: 340px;
+            margin: 50px auto;
+        }
+        .login-form form {
+            padding: 30px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="login-form">
+                <form>
+                    <h2 class="text-center">登入</h2>       
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="帳號">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="密碼">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary">登入</button>
+                    </div>
+                    <div class="text-danger text-center">
+                        擺放錯誤訊息的地方 (預設隱藏)，再次點擊登入後要消失
+                    </div>
+                </form>
+            </div>
+       
+            <div class="hide">
+                <div class="text-left"><button class="btn btn-danger">登出</button></div>
+                <table class="table">
+                    <thead>
+                        <th>學生</th>
+                        <th>數學</th>
+                        <th>國文</th>
+                        <th>英文</th>
+                        <th>歷史</th>
+                        <th>地理</th>
+                        <th>總分</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sin</td>
+                            <td>100</td>
+                            <td><span style="color: red;">59</span></td>
+                            <td>100</td>
+                            <td>100</td>
+                            <td>100</td>
+                            <td>500</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
