@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>prac 3</title>
+    <title>prac 4</title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <script>
         /**
-         練習主軸：了解＆應用 localstorge, sessionStorage, cookie
-         - 承 prac2.html, 在登入成功後，即使重新整理頁面，依舊保持著登入著的狀態
-         - 若開了新的分頁打開 prac3/html，需重新登入
-         - 若點擊登出後，要清除暫存，避免保持著登入著狀態
+         練習主軸： 表單搜尋練習 & dom 操作
+         - 承 prac3.html
+         - 可查詢特定學生的成績，若沒指定則查詢全部
         */
         var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
     </script>
@@ -48,8 +47,22 @@
                 </form>
             </div>
        
-            <div class="hide">
-                <div class="text-left"><button class="btn btn-danger">登出</button></div>
+            <div class="row hide">
+                <div class="row">
+                    <div class="text-right"><button class="btn btn-danger">登出</button></div>
+                </div>
+                <div class="row">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control" >
+                                <option>全部</option>
+                            </select>
+                            <button class="btn btn-primary">搜尋</button>
+                        </div>
+                        
+                    </form>
+                    
+                </div>
                 <table class="table">
                     <thead>
                         <th>學生</th>
