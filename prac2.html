@@ -18,7 +18,9 @@
          - 解析回傳資料後，判斷 status=1 的情況下，將prac1.成績表顯示在畫面上，其他 status 的情況為失敗
          - 登出按鈕，隱藏成績表並回到登入畫面
         */
-        var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+        // var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+
+        
     </script>
     <style type="text/css">
         .login-form {
@@ -34,27 +36,27 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="login-form">
+            <div id="login" class="login-form">
                 <form>
                     <h2 class="text-center">登入</h2>       
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="帳號">
+                        <input id="username" onclick="messageclear()" type="text" class="form-control" placeholder="帳號">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="密碼">
+                        <input id="password" onclick="messageclear()" type="password" class="form-control" placeholder="密碼">
                     </div>
                     <div class="form-group text-center">
-                        <button class="btn btn-primary">登入</button>
+                        <a onclick="loginbtn()" class="btn btn-primary">登入</a>
                     </div>
-                    <div class="text-danger text-center">
-                        擺放錯誤訊息的地方 (預設隱藏)，再次點擊登入後要消失
+                    <div id="message" class="text-danger text-center">
+                        
                     </div>
                 </form>
             </div>
        
-            <div class="hide">
-                <div class="text-left"><button class="btn btn-danger">登出</button></div>
-                <table class="table">
+            <div id="content" class="hide">
+                <div class="text-left"><button class="btn btn-danger" onclick="signout()">登出</button></div>
+                <table id="mytable" class="table">
                     <thead>
                         <th>學生</th>
                         <th>數學</th>
@@ -65,7 +67,7 @@
                         <th>總分</th>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>Sin</td>
                             <td>100</td>
                             <td><span style="color: red;">59</span></td>
@@ -73,11 +75,95 @@
                             <td>100</td>
                             <td>100</td>
                             <td>500</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <script>
+        var message = document.getElementById('message');
+        var table = document.getElementById('mytable');
+        var tablernum = table.rows.length;
+        var tablecnum = table.rows[0].cells.length;
+        var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+        
+        // 點擊帳密 清空訊息欄
+        function messageclear() {
+            message.innerHTML="";
+        }
+        // 登入
+        function loginbtn() {
+            messageclear();
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            
+            // 點擊登入時，改變狀態文字
+            message.innerHTML = "登入中";
+
+            var xhr = new XMLHttpRequest();
+
+            // 組成使用 GET 方式的請求網址
+            var url = "https://shawn-api.a45.me/test/api.php?action=login&username=" + username + "&password=" + password;
+            
+            // 判斷 ajax 處理完的狀態
+            xhr.onreadystatechange = function (){
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var str = JSON.parse(xhr.responseText);
+                    message.innerHTML = str.message;
+
+                    if(str.status == 1) {
+                        setTimeout(function(){
+                            // 隱藏登入視窗
+                            document.getElementById('login').classList.add("hide");
+
+                            // 顯示成績表
+                            document.getElementById('content').classList.remove("hide");
+                            showScoreTable();
+                        }, 1000);
+                    }
+                }
+            };
+            xhr.open("GET", url, true);
+            xhr.send();
+        }
+
+        // 登出
+        function signout() {
+            window.location.reload();
+        }
+
+        // 顯示成績
+        function showScoreTable(){
+            for ( i = 0; i < student.length; i ++ ){
+                transcript(student[i]);       
+            }
+        }
+
+        function transcript(name) {
+            var tablerow =  table.insertRow(tablernum);
+            var box = new Array(tablecnum);
+            var sum = 0;
+
+            tablerow.insertCell(0).innerHTML = name;
+            for( var i = 1 ; i < tablecnum-1 ; i ++){
+                box[i] = random();
+                if( box[i] < 60){
+                    tablerow.insertCell(i).innerHTML = '<span style="color: red;">' + box[i] + '</span>';
+                }else
+                {
+                    tablerow.insertCell(i).innerHTML = box[i];
+                }
+                sum= sum+box[i];
+            }
+            tablerow.insertCell(tablecnum-1).innerHTML =sum;
+        }
+
+        function random() {
+            return Math.floor(Math.random()*101);
+        }
+        
+    </script>
 </body>
 </html>
