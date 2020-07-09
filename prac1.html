@@ -14,12 +14,12 @@
          - 學生： Sin, Xin, 小智, Ken-G
          - 若隨機產生出來的分數低於60分，用紅字顯示
          */
-        var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+
     </script>
 </head>
 <body>
     <div class="container">
-        <table class="table">
+        <table  id="myTable" class="table">
             <thead>
                 <th>學生</th>
                 <th>數學</th>
@@ -30,17 +30,65 @@
                 <th>總分</th>
             </thead>
             <tbody>
-                <tr>
-                    <td>Sin</td>
-                    <td>100</td>
-                    <td><span style="color: red;">59</span></td>
-                    <td>100</td>
-                    <td>100</td>
-                    <td>100</td>
-                    <td>500</td>
-                </tr>
+                <!-- <tr >
+                    <td id="name">Sin</td>
+                    <td class="subject">100</td>
+                    <td class="subject"><span style="color: red;">59</span></td>
+                    <td class="subject">100</td>
+                    <td class="subject">100</td>
+                    <td class="subject">100</td>
+                    <td class="subject">500</td>
+                </tr> -->
             </tbody>
         </table>
     </div>
+    <script>
+        // add
+
+        var table = document.getElementById("myTable");
+        var tablernum = table.rows.length;  //搜尋有幾列tr
+        var tablecnum = table.rows[0].cells.length;  //搜尋第一個tr 有幾個td
+        var student = ['a1','a2','a3','a4']; //學生名陣列
+        
+            // 帶入學生函示
+        function rownum(){
+            for( var i = 0 ; i < student.length; i++){
+                transcript(student[i]) ;
+            }
+
+        }
+
+            //產生分數 和總分 函示
+        function transcript(name) {
+
+        var tablerow = table.insertRow(tablernum); //產生 tr
+        var box  = new Array(tablecnum) //放置td用陣列
+        var sum = 0; //總數初始為零
+
+        tablerow.insertCell(0).innerHTML  = name; //陣列[0]帶入學生名
+
+            for( var i =1 ; i < tablecnum-1 ; i++){ //判斷有幾個欄位 由陣列[1]輸入
+                box[i] = random(); //亂數 帶入陣列
+                if (box[i]<60){ //未滿60 以紅色顯示
+                    tablerow.insertCell(i).innerHTML = '<span style="color: red;">' + box[i]; '</span>' //帶入td
+                }
+                else{
+                    tablerow.insertCell(i).innerHTML  = box[i]; //帶入td
+                }
+                sum = sum+box[i] //加總
+            }
+        tablerow.insertCell(tablecnum-1).innerHTML  = sum; //  顯示加總
+
+        }
+        // 產生亂數用function
+        function random(){
+            return Math.floor(Math.random()*100);
+        };
+
+
+
+
+         rownum();
+    </script>
 </body>
 </html>
