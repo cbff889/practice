@@ -13,14 +13,12 @@
          - 輸入完帳號密碼後，點擊登入按鈕並於下方出現"登入中.."，呼叫ajax進行登入，若有錯誤，顯示在畫面上
             - 呼叫網址: https://shawn-api.a45.me/test/api.php
             - 方法: GET/POST
-            - 參數: action=login, username=帳號, passowrd=密碼
+            - 參數: action=login, username=帳號, password=密碼
             - 資料回傳: json 格式
          - 解析回傳資料後，判斷 status=1 的情況下，將prac1.成績表顯示在畫面上，其他 status 的情況為失敗
          - 登出按鈕，隱藏成績表並回到登入畫面
         */
         // var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
-
-        
     </script>
     <style type="text/css">
         .login-form {
@@ -40,23 +38,22 @@
                 <form>
                     <h2 class="text-center">登入</h2>       
                     <div class="form-group">
-                        <input id="username" onclick="messageclear()" type="text" class="form-control" placeholder="帳號">
+                        <input onclick="messageclear()" id="username" type="text" class="form-control" placeholder="帳號">
                     </div>
                     <div class="form-group">
-                        <input id="passowrd" onclick="messageclear()" type="password" class="form-control" placeholder="密碼">
+                        <input onclick="messageclear()" id="password" type="password" class="form-control" placeholder="密碼">
                     </div>
                     <div class="form-group text-center">
                         <a onclick="loginbtn()" class="btn btn-primary">登入</a>
-                        <button onclick="loginbtn()" class="btn btn-primary">登入</button>
                     </div>
                     <div id="message" class="text-danger text-center">
-                        擺放錯誤訊息的地方 (預設隱藏)，再次點擊登入後要消失
                     </div>
                 </form>
             </div>
        
             <div id="content" class="hide">
-                <div class="text-left"><button class="btn btn-danger" onclick="signout()">登出</button></div>
+            <!-- <div id="content"> -->
+                <div class="text-left"><button onclick="signout()" class="btn btn-danger">登出</button></div>
                 <table id="mytable" class="table">
                     <thead>
                         <th>學生</th>
@@ -82,79 +79,85 @@
             </div>
         </div>
     </div>
-    <script>
-        
-        var login = document.getElementById('login');
-        var content = document.getElementById('content');
-        var usernameElement = document.getElementById('username');
-        var passowrdElement = document.getElementById('passowrd');
-        var message = document.getElementById('message');
-        // 點擊帳密 清空訊息欄
-        function messageclear() {
-            message.innerHTML="";
+</body>
+<script type="text/javascript">
+    var login =document.getElementById("login");
+    var message =document.getElementById("message");
+    var content =document.getElementById("content");
+
+    function messageclear() {
+       message.innerHTML=""; 
+    }
+
+    function loginbtn(){
+        var username =document.getElementById("username").value;
+        var password =document.getElementById("password").value;
+
+        message.innerHTML="登入中";
+
+        var xhr = new XMLHttpRequest();
+        var url = "https://shawn-api.a45.me/test/api.php?action=login&username=" + username + "&password=" + password;
+
+    xhr.onreadystatechange= function () {
+        if(xhr.readyState == 4 && xhr.status == 200){
+            var str = JSON.parse(xhr.responseText);
+            message.innerHTML = str.message;
+            if(str.status==1) {
+                setTimeout(function(){
+                login.classList.add('hide');
+                content.classList.remove('hide');
+                rownum();
+                }, 1000);
+            }
         }
-        // 登入
-        function loginbtn() {
-            var username = usernameElement.value;
-            var passowrd = passowrdElement.value;
-                message.innerHTML="登入中";
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET","https://shawn-api.a45.me/test/api.php", true)
+    };
+    
+    xhr.open("GET", url ,true);
+    xhr.send();
 
-                xhr.send();
-                if(username == 'test' & passowrd == 'test'  ){
-                    
-                    login.classList.add("hide");
-                    content.classList.remove("hide")
-
-                }else{
-                    xhr.onload= function(){
-                        var srt = JSON.parse(xhr.responseText);
-                        var mess=srt.message
-                        message.innerText=mess;
-                    }
-                }
-        }
-        messageclear();
-        // 登出
-        function signout() {
-            window.location.reload();
-        }
+    }
+    function signout() {
+        window.location.reload();
+    }
 
 
-        var table = document.getElementById('mytable');
-        var tablernum = table.rows.length;
-        var tablecnum = table.rows[0].cells.length;
+    // ----------------------------------------------------------------------------------------------------------
+
+    var table = document.getElementById("mytable");
+        // var trnum = table.rows.length;
+        var tdnum = table.rows[0].cells.length;
         var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
-        function rownum(){
-            for ( i = 0; i < student.length; i ++ ){
-                transcript(student[i]);       
-            }
-        }
 
-        function transcript(name) {
-            var tablerow =  table.insertRow(tablernum);
-            var box = new Array(tablecnum);
-            var sum = 0;
-
-            tablerow.insertCell(0).innerHTML = name;
-            for( var i = 1 ; i < tablecnum-1 ; i ++){
-                box[i] = random();
-                if( box[i] < 60){
-                    tablerow.insertCell(i).innerHTML = '<span style="color: red;">' + box[i] + '</span>';
-                }else
-                {
-                    tablerow.insertCell(i).innerHTML = box[i];
-                }
-                sum= sum+box[i];
+        function rownum() {
+            for(i=0; i < student.length ; i++ ){
+                transcript(student[i]);    
             }
-            tablerow.insertCell(tablecnum-1).innerHTML =sum;
+            
         }
 
         function random() {
-            return Math.floor(Math.random()*101);
+          return Math.floor(Math.random()*101);
         }
-        rownum();
-    </script>
-</body>
+
+        function transcript(name) {
+            var tr = table.insertRow(-1);
+            var box = new Array();
+            var sum = 0
+            tr.insertCell(0).innerHTML=name;
+            for(var i= 1; i < tdnum -1; i++ ){
+                box[i]= random();
+                if(box[i]< 60){
+                    tr.insertCell(i).innerHTML='<span style="color: red;">' + box[i] +'</span>';
+                }else{
+                    tr.insertCell(i).innerHTML=box[i];
+                }
+                sum =sum+box[i];
+            }
+            tr.insertCell(i).innerHTML=sum;
+        }
+        
+
+
+
+</script>
 </html>
