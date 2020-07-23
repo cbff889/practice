@@ -27,30 +27,30 @@
         }
     </style>
 </head>
-<body>
+<body onload="checkCookie()">
     <div class="container">
         <div class="row">
-            <div class="login-form">
+            <div  id="login" class="login-form">
                 <form>
                     <h2 class="text-center">登入</h2>       
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="帳號">
+                        <input onclick="messageclear()" id="username" type="text" class="form-control" placeholder="帳號">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="密碼">
+                        <input onclick="messageclear()"  id="password" type="password" class="form-control" placeholder="密碼">
                     </div>
                     <div class="form-group text-center">
-                        <button class="btn btn-primary">登入</button>
+                        <a onclick="loginbtn()" class="btn btn-primary">登入</a>
                     </div>
-                    <div class="text-danger text-center">
+                    <div id="message" class="text-danger text-center">
                         擺放錯誤訊息的地方 (預設隱藏)，再次點擊登入後要消失
                     </div>
                 </form>
             </div>
        
-            <div class="hide">
-                <div class="text-left"><button class="btn btn-danger">登出</button></div>
-                <table class="table">
+            <div id="content" class="hide">
+                <div class="text-left"><button onclick="signout()" class="btn btn-danger">登出</button></div>
+                <table id="mytable" class="table">
                     <thead>
                         <th>學生</th>
                         <th>數學</th>
@@ -61,7 +61,7 @@
                         <th>總分</th>
                     </thead>
                     <tbody>
-                        <tr>
+                       <!--  <tr>
                             <td>Sin</td>
                             <td>100</td>
                             <td><span style="color: red;">59</span></td>
@@ -69,11 +69,123 @@
                             <td>100</td>
                             <td>100</td>
                             <td>500</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </body>
+<script type="text/javascript">
+function setCookie(cname,cvalue,exdays){
+    var d = new Date();
+    d.setTime(d.getTime()+(exdays*24*60*60*1000));
+    var expires = "expires="+d.toGMTString();
+    document.cookie = cname+"="+cvalue+"; "+expires;
+    document.cookie = cname+"="+cvalue;
+}
+function getCookie(cname){
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+    }
+    return "";
+}
+function checkCookie(){
+
+
+    var user=getCookie("usernam");
+    if (user!=""){
+            login.classList.add('hide');
+            content.classList.remove('hide');
+            rownum();
+    }
+    
+}
+
+    // ----------------------------------------------------------------------------------------------------------
+
+    var login =document.getElementById("login");
+    var message =document.getElementById("message");
+    var content =document.getElementById("content");
+
+    function messageclear() {
+       message.innerHTML=""; 
+    }
+
+    function loginbtn() {
+        var username =document.getElementById("username").value;
+        var password =document.getElementById("password").value;
+
+        message.innerHTML="登入中";
+
+        var xhr = new XMLHttpRequest();
+        var url = "https://shawn-api.a45.me/test/api.php?action=login&username=" + username + "&password=" + password;
+        
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200){
+                var str = JSON.parse(xhr.responseText)
+                
+                message.innerHTML=str.message;
+                if(str.status == 1 ){
+                    setTimeout(function(){
+                        login.classList.add('hide');
+                        content.classList.remove('hide');
+                        
+                        rownum();
+                        setCookie('usernam',username,1);
+                        setCookie('passwor',password,1);
+
+                    },1000);
+                }
+            }
+        }
+        xhr.open("GET", url ,true);
+        xhr.send();
+    }
+    function signout() {
+        window.location.reload();
+        setCookie('usernam',"",1);
+    }
+    // ----------------------------------------------------------------------------------------------------------
+
+    var table = document.getElementById("mytable");
+        // var trnum = table.rows.length;
+        var tdnum = table.rows[0].cells.length;
+        var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+
+        function rownum() {
+            for(i=0; i < student.length ; i++ ){
+                transcript(student[i]);    
+            }
+            
+        }
+
+        function random() {
+          return Math.floor(Math.random()*101);
+        }
+
+        function transcript(name) {
+            var tr = table.insertRow(-1);
+            var box = new Array();
+            var sum = 0
+            tr.insertCell(0).innerHTML=name;
+            for(var i= 1; i < tdnum -1; i++ ){
+                box[i]= random();
+                if(box[i]< 60){
+                    tr.insertCell(i).innerHTML='<span style="color: red;">' + box[i] +'</span>';
+                }else{
+                    tr.insertCell(i).innerHTML=box[i];
+                }
+                sum =sum+box[i];
+            }
+            tr.insertCell(i).innerHTML=sum;
+        }
+        
+
+
+</script>
 </html>
