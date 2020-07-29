@@ -77,28 +77,42 @@
     </div>
 </body>
 <script type="text/javascript">
+
+    // setCookie設定 
 function setCookie(cname,cvalue,exdays){
-    var d = new Date();
-    d.setTime(d.getTime()+(exdays*24*60*60*1000));
-    var expires = "expires="+d.toGMTString();
+    var d = new Date(); //建立時間物件
+    d.setTime(d.getTime()+(exdays*24*60*60*1000)); 
+    // d.setTime 將毫秒數變成標準時間 
+    // d.getTime()　目前時間的毫秒數
+    // 一天的運算 day*24*60*60*1000
+    var expires = "expires="+d.toGMTString(); 
+    // d.toGMTString 轉換為格林威治时间
+
     document.cookie = cname+"="+cvalue+"; "+expires;
     document.cookie = cname+"="+cvalue;
+    console.log(document.cookie);
 }
+    // Getcookie取得
 function getCookie(cname){
     var name = cname + "=";
     var ca = document.cookie.split(';');
-    
+    console.log(ca)
     for(var i=0; i<ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+        var c = ca[i].trim(); //.trim刪除空白
+        if (c.indexOf(name)==0) { //indexOf() 返回name字符串值在字符串中首次出现的位置。
+            
+    console.log(c);
+            return c.substring(name.length,c.length); }
+            //substring() 提取字符串中介于name.lengthc和c.length的字
     }
     return "";
 }
+
+
 function checkCookie(){
-
-
     var user=getCookie("usernam");
     if (user!=""){
+    console.log("123")
             login.classList.add('hide');
             content.classList.remove('hide');
             rownum();
@@ -137,7 +151,7 @@ function checkCookie(){
                         
                         rownum();
                         setCookie('usernam',username,1);
-                        setCookie('passwor',password,1);
+                        // setCookie('passwor',password,1);
 
                     },1000);
                 }
