@@ -213,18 +213,19 @@ function rownum(){
 
 function transcript(name) {
     var newrow = mytable.insertRow(-1);
-    var box = new Array
+    var box = new Array();
+    var sum = 0;
     newrow.insertCell(0).innerHTML= name;
-    for( var i = 1 ; i < tdnum ; i ++ ){
+    for( var i = 1 ; i < tdnum -1 ; i ++ ){
         box[i] = random();
         if(box[i] < 60 ){
             newrow.insertCell(i).innerHTML= '<span style="color: red">' + box[i] + '</span>';
         }else{
-            newrow.insertCell(i).innerHTML=box[i]
+            newrow.insertCell(i).innerHTML=box[i];
         }
-
+        sum = sum+box[i];
     }
-    
+    newrow.insertCell(i).innerHTML=sum;
 }
 
 

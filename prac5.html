@@ -101,11 +101,11 @@
 function setCookie(cname,cvalue,exdays) {
     // function set() {
     var d = new Date();
-    
+
     d.setTime(d.getTime()+(1*24*60*60*1000));
     var expires = "expires="+d.toGMTString();
     document.cookie = cname+"="+cvalue+"; "+expires;
-    
+
 }
 function getCookie(cname) {
    var name =cname + "=";
@@ -124,10 +124,10 @@ function checkCookie(){
     if (user!=""){
             loginarea.classList.add("hide");
             content.classList.remove('hide');
-            setTimeout(function(){ 
-                rownum(); // 延後執行,讓名單跑出來
-            }, 500);
-            
+            // setTimeout(function(){ 
+            //     rownum(); // 延後執行,讓名單跑出來
+            // }, 500);
+
     }
 }
 
@@ -155,9 +155,9 @@ function loginbtn() {
                     loginarea.classList.add("hide");
                     content.classList.remove("hide");
 
-                    setTimeout(function(){ 
-                        rownum(); // 延後執行,讓名單跑出來
-                    }, 500);
+                    // setTimeout(function(){ 
+                    //     rownum(); // 延後執行,讓名單跑出來
+                    // }, 500);
                     setCookie("usernam",username,1);
                },1000);
             }
@@ -165,8 +165,8 @@ function loginbtn() {
     }
     xhr.open("GET",url,true);
     xhr.send();
-    
-    
+
+
 }
 function signout() {
     window.location.reload();
@@ -179,7 +179,8 @@ var mytable = document.getElementById("mytable");
 // var trnum = mytable.rows.length;
 var tdnum = mytable.rows[0].cells.length;
 // var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
- var student = new  Array ;
+var slist = document.getElementById("slist");
+var student = new  Array ;
     var xh = new XMLHttpRequest;
     var urllist = "https://shawn-api.a45.me/test/api.php?action=getStudent";
     xh.open("GET",urllist,true);
@@ -188,36 +189,46 @@ var tdnum = mytable.rows[0].cells.length;
         if(xh.readyState == 4 && xh.status){
             var stjson = JSON.parse(xh.responseText);
             var sltist= stjson.result;
-            
+
             for (var i = 0 ; i < sltist.length; i++) {
-                
+
                 student[i] = sltist[i].Name;
-            
+                var opt = document.createElement("option");
+                opt.value=student[i];
+                opt.innerHTML=student[i];
+                slist.add(opt);
+
             }
+                rownum();
         }
     }
+
+                
+console.log(slist.options);
 function rownum(){
-    for (var i = 0 ; i < student.length; i++) {
-        transcript(student[i]);
+    for (var i = 1 ; i < slist.options.length; i++) {
+        transcript(slist.options[i].value);
 
     }
-    
+
 }
 
 function transcript(name) {
     var newrow = mytable.insertRow(-1);
     var box = new Array;
+    var sum = 0;
     newrow.insertCell(0).innerHTML= name;
-    for( var i = 1 ; i < tdnum ; i ++ ){
+    for( var i = 1 ; i < tdnum -1 ; i ++ ){
         box[i] = random();
         if(box[i] < 60 ){
             newrow.insertCell(i).innerHTML= '<span style="color: red">' + box[i] + '</span>';
         }else{
             newrow.insertCell(i).innerHTML=box[i]
         }
-
+        sum= sum+box[i];
     }
-    
+    newrow.insertCell(i).innerHTML=sum;
+
 }
 
 
@@ -226,35 +237,35 @@ function random () {
 }
 // ----------------------------------------------------prac 4------------------------------------------------------
 
-var slist = document.getElementById("slist");
-    // 在select增加option選項
-    function writelist() {
-        for(var i=0 ; i < student.length ; i++){
-            var opt = document.createElement("option");
-            // 用createElement新增元素option
-            opt.value=student[i];
-            opt.innerHTML=student[i];
-            slist.add(opt);
-            // 在slist新增 opt
-        }
-    }
-setTimeout(function () {
-    writelist();
-},500);
+// var slist = document.getElementById("slist");
+//     // 在select增加option選項
+//     function writelist() {
+//         for(var i=0 ; i < student.length ; i++){
+//             var opt = document.createElement("option");
+//             // 用createElement新增元素option
+//             opt.value=student[i];
+//             opt.innerHTML=student[i];
+//             slist.add(opt);
+//             // 在slist新增 opt
+//         }
+//     }
+// setTimeout(function () {
+//     writelist();
+// },500);
 
 function searchbtn() {
     var optlist = slist.value;
-            
+
     if(optlist !== "全部" ){
-            
+
         for ( i = 1 ; i< mytable.rows.length ; i++){
-            
+
             mytable.rows[i].classList.add("hide");
             if( optlist == mytable.rows[i].cells[0].innerHTML ){
                 mytable.rows[i].classList.remove("hide");
             }
         }
-        
+
 
     }else{
         for ( i = 1 ; i< mytable.rows.length ; i++){
@@ -263,6 +274,6 @@ function searchbtn() {
     }
 }
 
-    
+
 </script>
 </html>
