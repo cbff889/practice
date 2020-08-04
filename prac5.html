@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>prac 4</title>
+    <title>prac 5</title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
@@ -17,7 +17,7 @@
             - 參數: action=getStudent
             - 資料回傳: json
         */
-        var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+        // var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
     </script>
     <style type="text/css">
         .login-form {
@@ -30,44 +30,44 @@
         }
     </style>
 </head>
-<body>
+<body onload="checkCookie()">
     <div class="container">
         <div class="row">
-            <div class="login-form">
+            <div id="loginarea" class="login-form">
                 <form>
                     <h2 class="text-center">登入</h2>       
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="帳號">
+                        <input onclick="messageclear()" id="username" type="text" class="form-control" placeholder="帳號">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="密碼">
+                        <input onclick="messageclear()" id="password" id="username" type="password" class="form-control" placeholder="密碼">
                     </div>
                     <div class="form-group text-center">
-                        <button class="btn btn-primary">登入</button>
+                        <a onclick="loginbtn()" class="btn btn-primary">登入</a>
                     </div>
-                    <div class="text-danger text-center">
+                    <div id="message" class="text-danger text-center">
                         擺放錯誤訊息的地方 (預設隱藏)，再次點擊登入後要消失
                     </div>
                 </form>
             </div>
        
-            <div class="row hide">
+            <div id="content" class="row hide">
                 <div class="row">
-                    <div class="text-right"><button class="btn btn-danger">登出</button></div>
+                    <div class="text-right"><button  onclick="signout()" class="btn btn-danger">登出</button></div>
                 </div>
                 <div class="row">
                     <form class="form-inline">
                         <div class="form-group">
-                            <select class="form-control" >
+                            <select id="slist" class="form-control" >
                                 <option>全部</option>
                             </select>
-                            <button class="btn btn-primary">搜尋</button>
+                            <a  onclick="searchbtn()"  class="btn btn-primary">搜尋</a>
                         </div>
                         
                     </form>
                     
                 </div>
-                <table class="table">
+                <table id="mytable" class="table">
                     <thead>
                         <th>學生</th>
                         <th>數學</th>
@@ -78,7 +78,7 @@
                         <th>總分</th>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>Sin</td>
                             <td>100</td>
                             <td><span style="color: red;">59</span></td>
@@ -86,11 +86,183 @@
                             <td>100</td>
                             <td>100</td>
                             <td>500</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </body>
+<script type="text/javascript">
+
+
+
+// ----------------------------------------------------prac 3------------------------------------------------------
+function setCookie(cname,cvalue,exdays) {
+    // function set() {
+    var d = new Date();
+    
+    d.setTime(d.getTime()+(1*24*60*60*1000));
+    var expires = "expires="+d.toGMTString();
+    document.cookie = cname+"="+cvalue+"; "+expires;
+    
+}
+function getCookie(cname) {
+   var name =cname + "=";
+   var ca = document.cookie.split(";");
+   for(var i=0; i<ca.length; i++){
+    var c = ca[i].trim();
+    if(c.indexOf(name)==0){
+        return c.substring(name.length,c.length);
+    }
+   }
+   return "";
+}
+
+function checkCookie(){
+    var user=getCookie("usernam");
+    if (user!=""){
+            loginarea.classList.add("hide");
+            content.classList.remove('hide');
+            setTimeout(function(){ 
+                rownum(); // 延後執行,讓名單跑出來
+            }, 500);
+            
+    }
+}
+
+// ----------------------------------------------------prac 2------------------------------------------------------
+    var loginarea = document.getElementById("loginarea");
+    var message = document.getElementById("message");
+    var content = document.getElementById("content");
+function messageclear() {
+    message.innerHTML="";
+}
+
+
+function loginbtn() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    var xhr = new XMLHttpRequest();
+    var url = "https://shawn-api.a45.me/test/api.php?action=login&username=" + username + "&password=" + password;
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState==4 && xhr.status == 200 ){
+            var str = JSON.parse(xhr.responseText)
+            message.innerHTML= str.message;
+            if(str.status == 1){
+               setTimeout(function () { 
+                    loginarea.classList.add("hide");
+                    content.classList.remove("hide");
+
+                    setTimeout(function(){ 
+                        rownum(); // 延後執行,讓名單跑出來
+                    }, 500);
+                    setCookie("usernam",username,1);
+               },1000);
+            }
+        }
+    }
+    xhr.open("GET",url,true);
+    xhr.send();
+    
+    
+}
+function signout() {
+    window.location.reload();
+    setCookie("usernam","",1);
+}
+
+
+// ----------------------------------------------------prac 1------------------------------------------------------
+var mytable = document.getElementById("mytable");
+// var trnum = mytable.rows.length;
+var tdnum = mytable.rows[0].cells.length;
+// var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
+ var student = new  Array ;
+    var xh = new XMLHttpRequest;
+    var urllist = "https://shawn-api.a45.me/test/api.php?action=getStudent";
+    xh.open("GET",urllist,true);
+    xh.send();
+    xh.onreadystatechange =function () {
+        if(xh.readyState == 4 && xh.status){
+            var stjson = JSON.parse(xh.responseText);
+            var sltist= stjson.result;
+            
+            for (var i = 0 ; i < sltist.length; i++) {
+                
+                student[i] = sltist[i].Name;
+            
+            }
+        }
+    }
+function rownum(){
+    for (var i = 0 ; i < student.length; i++) {
+        transcript(student[i]);
+
+    }
+    
+}
+
+function transcript(name) {
+    var newrow = mytable.insertRow(-1);
+    var box = new Array;
+    newrow.insertCell(0).innerHTML= name;
+    for( var i = 1 ; i < tdnum ; i ++ ){
+        box[i] = random();
+        if(box[i] < 60 ){
+            newrow.insertCell(i).innerHTML= '<span style="color: red">' + box[i] + '</span>';
+        }else{
+            newrow.insertCell(i).innerHTML=box[i]
+        }
+
+    }
+    
+}
+
+
+function random () {
+  return Math.floor(Math.random()*101);
+}
+// ----------------------------------------------------prac 4------------------------------------------------------
+
+var slist = document.getElementById("slist");
+    // 在select增加option選項
+    function writelist() {
+        for(var i=0 ; i < student.length ; i++){
+            var opt = document.createElement("option");
+            // 用createElement新增元素option
+            opt.value=student[i];
+            opt.innerHTML=student[i];
+            slist.add(opt);
+            // 在slist新增 opt
+        }
+    }
+setTimeout(function () {
+    writelist();
+},500);
+
+function searchbtn() {
+    var optlist = slist.value;
+            
+    if(optlist !== "全部" ){
+            
+        for ( i = 1 ; i< mytable.rows.length ; i++){
+            
+            mytable.rows[i].classList.add("hide");
+            if( optlist == mytable.rows[i].cells[0].innerHTML ){
+                mytable.rows[i].classList.remove("hide");
+            }
+        }
+        
+
+    }else{
+        for ( i = 1 ; i< mytable.rows.length ; i++){
+            mytable.rows[i].classList.remove("hide");
+        }
+    }
+}
+
+    
+</script>
 </html>
