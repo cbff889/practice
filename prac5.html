@@ -28,6 +28,32 @@
             padding: 30px;
             border: 1px solid #ccc;
         }
+        .loader{position: relative;}
+        .loader div{
+            position: absolute;
+            width: 8rem;
+            height: 8rem;
+            border-radius: 50%;
+            background: transparent;
+            border-width: 6px;
+            border-color: #000 transparent transparent transparent;
+            border-style: solid;
+            display: inline-block;
+            animation: loader-around 1.3s infinite
+        }
+        /*.loader div:nth-child(1){animation-delay:0;}*/
+        .loader div:nth-child(2){animation-delay:0.15s;}
+        .loader div:nth-child(3){animation-delay:0.3s;}
+        .loader div:nth-child(4){animation-delay:0.45s;}
+
+        @keyframes loader-around{
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body onload="checkCookie()">
@@ -89,6 +115,14 @@
                         </tr> -->
                     </tbody>
                 </table>
+                <div id="listloader" class="text-center">
+                  <div class="loader" >
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -180,6 +214,7 @@ var mytable = document.getElementById("mytable");
 var tdnum = mytable.rows[0].cells.length;
 // var student = ['SIN', 'XIN', 'KEN', 'MANGO'];
 var slist = document.getElementById("slist");
+var listloader =document.getElementById("listloader");
 var student = new  Array ;
     var xh = new XMLHttpRequest;
     var urllist = "https://shawn-api.a45.me/test/api.php?action=getStudent";
@@ -197,18 +232,15 @@ var student = new  Array ;
                 opt.value=student[i];
                 opt.innerHTML=student[i];
                 slist.add(opt);
-
             }
                 rownum();
+                listloader.classList.add("hide");
         }
     }
 
-                
-console.log(slist.options);
 function rownum(){
     for (var i = 1 ; i < slist.options.length; i++) {
         transcript(slist.options[i].value);
-
     }
 
 }
@@ -236,22 +268,6 @@ function random () {
   return Math.floor(Math.random()*101);
 }
 // ----------------------------------------------------prac 4------------------------------------------------------
-
-// var slist = document.getElementById("slist");
-//     // 在select增加option選項
-//     function writelist() {
-//         for(var i=0 ; i < student.length ; i++){
-//             var opt = document.createElement("option");
-//             // 用createElement新增元素option
-//             opt.value=student[i];
-//             opt.innerHTML=student[i];
-//             slist.add(opt);
-//             // 在slist新增 opt
-//         }
-//     }
-// setTimeout(function () {
-//     writelist();
-// },500);
 
 function searchbtn() {
     var optlist = slist.value;
